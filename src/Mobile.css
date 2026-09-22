@@ -1,0 +1,21 @@
+@media (max-width: 600px) {
+    .signup-page {
+        padding: 24px;
+    }
+    .logo {
+        top: 24px;
+        left: 24px;
+    }
+    .signup-container {
+        padding-top: 65px;
+    }
+    .heading {
+        margin-bottom: 40px;
+    }
+    .heading h1 {
+        font-size: 24px;
+    }
+    .social-btn {
+        flex-direction: column;
+    }
+}
