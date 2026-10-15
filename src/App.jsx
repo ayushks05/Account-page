@@ -6,9 +6,8 @@ import './Mobile.css'
 function App() {
 
   return (
-    <div className='app'>
-      <Signup/>
-    </div>
+    <>
+    </>
   )
 }
 

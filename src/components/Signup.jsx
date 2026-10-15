@@ -4,56 +4,56 @@ function Signup() {
     const [showpassword, setshowpassword] = useState(false);
 
     return (
-        <div className='signup-page'>
-            <div className="logo"></div>
-            <div className="signup-container">
-                <div className="heading">
-                    <h1>Create a account</h1>
+        <div className='min-h-screen bg-[#e5e5e5] relative p-8'>
+            <div className='left-8 w-8 h-8 bg-[#c6c6c6] rounded-full absolute top-8'></div>
+            <div className="w-full max-w-183 m-auto pt-15">
+                <div className="text-center mb-13">
+                    <h1 className='text-5xl'>Create a account</h1>
 
-                    <p>
+                    <p className='text-base text-[#666]'>
                         Already have an account?
-                        <a href="#">Log in</a>
+                        <a href="#" className='text-blue-800 underline'>Log in</a>
                     </p>
                 </div>
                 <form action="account">
-                    <div className="form-group">
-                        <label>What should we call you?</label>
+                    <div className="mb-7">
+                        <label className='block text-sx text-[#555] mb-2'>What should we call you?</label>
 
-                        <input type="text" placeholder='Enter your profile name'/>
+                        <input type="text" placeholder='Enter your profile name' className='w-full h-9 border-2 border-solid border-[#cfcfcf] rounded-lg px-4 text-[13px] outline-none'/>
                     </div>
-                    <div className="form-group">
+                    <div className="mb-7">
                         <label>What's your email?</label>
 
-                        <input type="email" placeholder='Enter your email address'/>
+                        <input type="email" placeholder='Enter your email address' className='w-full h-9 border-2 border-solid border-[#cfcfcf] rounded-lg px-4 text-[13px] outline-none'/>
                     </div>
-                    <div className="form-group">
-                        <div className="password-label">
-                            <label>Create a password</label>
+                    <div className="mb-7">
+                        <div className="flex justify-between items-center">
+                            <label className='flex justify-between items-center'>Create a password</label>
 
-                            <button type='button' onClick={() => setshowpassword(!showpassword)}>{showpassword ? "Hide" : "Show"}</button>
+                            <button className='border-none bg-transparent text-[#777] cursor-pointer' type='button' onClick={() => setshowpassword(!showpassword)}>{showpassword ? "Hide" : "Show"}</button>
                         </div>
-                        <input type= {showpassword ? "text" : "password"} placeholder='Enter your password'/>
-                        <small>Use 8 or more characters with a mix of letters, numbers & symbols</small>
+                        <input type= {showpassword ? "text" : "password"} placeholder='Enter your password' className='w-full h-9 border-2 border-solid border-[#cfcfcf] rounded-lg px-4 text-[13px] outline-none'/>
+                        <small className='block mt-2 text-xs text-[#777]'>Use 8 or more characters with a mix of letters, numbers & symbols</small>
                     </div>
-                    <p className='terms'>
+                    <p className='terms text-xs text-[#555] mt-8 mb-4'>
                         By creating an account, you agree to the{" "}
-                        <a href="#">Terms of use</a> and{" "}
-                        <a href="#">Privacy policy</a>.
+                        <a href="#" className='text-[#333] underline'>Terms of use</a> and{" "}
+                        <a href="#" className='text-[#333] underline'>Privacy policy</a>.
                     </p>
-                    <button className='create-btn' type='submit'>Create an account</button>
+                    <button className='w-full h-12 border-none rounded-3xl bg-[#c5c5c5] text-white text-xl cursor-pointer hover:bg-[#999]' type='submit'>Create an account</button>
                 </form>
-                <div className="social-section">
-                    <p>OR Continue with</p>
-                    <div className="social-btn">
-                        <button>
+                <div className="social-section mt-12">
+                    <p className='text-xl text-[#666] mb-4'>OR Continue with</p>
+                    <div className="flex gap-3.5">
+                        <button className='flex-1 h-10 bg-white border-2 border-solid border-[#888] rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer'>
                             <span className='facebook'>f</span>
                             Facebook
                         </button>
-                        <button>
-                            <span className='google'>G</span>
+                        <button className='flex-1 h-10 bg-white border-2 border-solid border-[#888] rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer'>
+                            <span>G</span>
                             Google
                         </button>
-                        <button>
+                        <button className='flex-1 h-10 bg-white border-2 border-solid border-[#888] rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer'>
                             <span className='apple'>.</span>
                             Apple
                         </button>
