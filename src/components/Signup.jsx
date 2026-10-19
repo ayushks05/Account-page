@@ -2,6 +2,7 @@ import {useState} from 'react';
 import googleLogo from '../assets/google.png';
 import appleLogo from '../assets/apple.png';
 import facebookLogo from '../assets/facebook.png';
+import { Link } from 'react-router';
 
 function Signup() {
     const [showpassword, setshowpassword] = useState(false);
@@ -15,7 +16,7 @@ function Signup() {
 
                     <p className='text-base text-[#666]'>
                         Already have an account?
-                        <a href="http://localhost:5173/login" className='text-blue-600 underline'>Log in</a>
+                        <Link to="/login" className='text-blue-600 underline'>Log in</Link>
                     </p>
                 </div>
                 <form action="account">

@@ -1,6 +1,7 @@
 import googleLogo from '../assets/google.png';
 import appleLogo from '../assets/apple.png';
 import facebookLogo from '../assets/facebook.png';
+import { Link } from 'react-router';
 
 function Login() {
     return (
@@ -11,10 +12,10 @@ function Login() {
 
                 <main className="mx-auto w-full max-w-[550px] px-5 pb-12 pt-14 text-[#333] sm:px-0 sm:pt-12">
                     <div className="mb-10 text-center">
-                        <h1 className="text-[35px] font-semibold leading-tight">Log in</h1>
+                        <h1 className="text-[35px] font-medium leading-tight">Log in</h1>
                         <p className="mt-2 text-base">
                             Don’t have an account?{' '}
-                            <a href="/signup" className="text-blue-500 underline">Sign up</a>
+                            <Link to="/signup" className="text-blue-500 underline">Sign up</Link>
                         </p>
                     </div>
 
