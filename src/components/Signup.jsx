@@ -3,9 +3,12 @@ import googleLogo from '../assets/google.png';
 import appleLogo from '../assets/apple.png';
 import facebookLogo from '../assets/facebook.png';
 import { Link } from 'react-router';
+import { updateProfile, createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../lib/firebase';
 
 function Signup() {
     const [showpassword, setshowpassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setformData] = useState({
         name: "",
         email: "",
@@ -25,41 +28,102 @@ function Signup() {
         seterror((prev) => ({
             ...prev,
             [name]: "",
+            form: "",
         }))
         setsuccess("");
     };
 
-    const handleSubmit = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
 
-        const validationErrors = {};
-        const email = formData.email.trim();
+        setsuccess("");
+
+        const newerrors = {};
 
         if (!formData.name.trim()) {
-            validationErrors.name = "Please enter your name.";
+            newerrors.name = "Please enter your name.";
         }
-        if (!email) {
-            validationErrors.email = "Please enter your email address.";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            validationErrors.email = "Please enter a valid email address.";
-        }
-        if (!formData.password) {
-            validationErrors.password = "Please enter a password.";
-        } else if (
-            formData.password.length < 8 ||
-            !/[A-Za-z]/.test(formData.password) ||
-            !/\d/.test(formData.password) ||
-            !/[^A-Za-z0-9]/.test(formData.password)
+        if (
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())
         ) {
-            validationErrors.password = "Use at least 8 characters, including letters, numbers, and symbols.";
-        }
-        if (!formData.acceptedTerms) {
-            validationErrors.acceptedTerms = "You must accept the terms to create an account.";
+            newerrors.email = "Please enter a valid email address.";
         }
 
-        seterror(validationErrors);
-        setsuccess(Object.keys(validationErrors).length === 0 ? "Your details are valid." : "");
-    };
+        const password = formData.password;
+
+        if (
+            password.length < 8 ||
+            !/[A-Za-z]/.test(password) ||
+            !/[0-9]/.test(password) ||
+            !/[^A-Za-z0-9]/.test(password)
+        ) {
+            newerrors.password = "Use at least 8 characters with a letter, number, and symbol.";
+        }
+
+        if (!formData.acceptedTerms) {
+            newerrors.acceptedTerms = "Please accept the terms.";
+        }
+
+        seterror(newerrors);
+
+        if (Object.keys(newerrors).length > 0) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                formData.email.trim(),
+                formData.password
+            );
+
+            try {
+                await updateProfile(userCredential.user, {
+                    displayName: formData.name.trim(),
+                });
+
+                setsuccess("Account created successfully!");
+            } catch (profileError) {
+                console.error("Profile update failed:", profileError.code);
+                setsuccess(
+                    "Account created, but the profile name could not be saved."
+                );
+            }
+        } catch (error) {
+            console.error("Signup error:", error.code);
+
+            let errorMessage = "Unable to create your account. Please try again.";
+
+            switch (error.code) {
+                case "auth/email-already-in-use":
+                    errorMessage = "This email is already registered.";
+                    break;
+                case "auth/invalid-email":
+                    errorMessage = "Please enter a valid email address.";
+                    break;
+                case "auth/weak-password":
+                    errorMessage = "Please choose a stronger password.";
+                    break;
+                case "auth/operation-not-allowed":
+                    errorMessage = "Email/Password sign-up is not enabled in Firebase.";
+                    break;
+                case "auth/network-request-failed":
+                    errorMessage = "Network error. Check your internet connection.";
+                    break;
+                default:
+                    break;
+            }
+
+            seterror((prev) => ({
+                ...prev,
+                form: errorMessage,
+            }));
+        } finally {
+            setIsSubmitting(false);
+        }
+        };
 
     return (
         <div className='min-h-screen bg-[#e5e5e5] relative p-8'>
@@ -73,7 +137,7 @@ function Signup() {
                         <Link to="/login" className='text-blue-600 underline'>Log in</Link>
                     </p>
                 </div>
-                <form noValidate onSubmit={handleSubmit}>
+                <form noValidate onSubmit={handleSignup}>
                     <div className="mb-7">
                         <label htmlFor="signup-name" className='block text-sx text-[#555] mb-2'>What should we call you?</label>
 
@@ -122,9 +186,12 @@ function Signup() {
                             </p>
                         )}
                     </div>
-                    <button className='w-full h-12 border-none rounded-3xl bg-[#c5c5c5] text-black text-xl cursor-pointer hover:bg-[#999] hover:text-white' type='submit'>Create an account</button>
+                    <button className='w-full h-12 border-none rounded-3xl bg-[#c5c5c5] text-black text-xl cursor-pointer hover:bg-[#999] hover:text-white' type='submit' disabled={isSubmitting}>{isSubmitting ? "Creating account..." : "Create an account"}</button>
                     {success && (
                         <p className='mt-1 text-sm text-green-700' role="status">{success}</p>
+                    )}
+                    {errors.form && (
+                        <p className='mt-1 text-sm text-red-600' role="alert">{errors.form}</p>
                     )}
                 </form>
                 <div className="social-section mt-12">
