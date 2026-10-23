@@ -3,12 +3,15 @@ import appleLogo from '../assets/apple.png';
 import facebookLogo from '../assets/facebook.png';
 import { Link } from 'react-router';
 import { useState } from 'react';
+import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 function Login() {
 
     const [showpassword, setshowpassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setformData] = useState({
-        name: "",
+        identifier: "",
         password: "",
         rememberMe: false,
     });
@@ -16,7 +19,7 @@ function Login() {
     const [message, setmessage] = useState("");
 
     const handlechange = (e) => {
-        const {name, value, type, checked} = e.target;
+        const { name, value, type, checked } = e.target;
 
         setformData((prev) => ({
             ...prev,
@@ -25,35 +28,82 @@ function Login() {
         seterrors((prev) => ({
             ...prev,
             [name]: "",
+            form: "",
         }));
         setmessage("");
-    }
+    };
 
-    const handleSubmit = (e) => {
+    const handlelogin = async (e) => {
         e.preventDefault();
 
-        const newerror = {};
-        const name = formData.name.trim();
+        setmessage("");
 
-        if (!name) {
-            newerror.name = "Enter your email address or username.";
-        } else if (
-            name.includes("@") &&
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(name)
-        ) {
-            newerror.name = "Enter a valid email address.";
+        const newerrors = {};
+        const identifier = formData.identifier.trim();
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!identifier) {
+            newerrors.identifier = "Enter your email address or username.";
+        } else if (!emailPattern.test(identifier)) {
+            newerrors.identifier = "Enter a valid email address. Username login is not configured yet.";
         }
 
         if (!formData.password) {
-            newerror.password = "Please enter your password.";
+            newerrors.password = "Please enter your password.";
         }
 
-        seterrors(newerror);
+        seterrors(newerrors);
 
-        if (Object.keys(newerror).length === 0) {
-            setmessage(
-            "Validation passed! Authentication is not connected yet."
+        if (Object.keys(newerrors).length > 0) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            await setPersistence(
+                auth,
+                formData.rememberMe ? browserLocalPersistence : browserSessionPersistence
             );
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                identifier,
+                formData.password
+            );
+            const user = userCredential.user;
+            setmessage(
+                `Welcome back${user.displayName ? `, ${user.displayName}` : ""}! Login successful.`
+            );
+        } catch (error) {
+            console.error("Login error:", error.code);
+
+            let errorMessage = "Unable to log in. Please try again.";
+            switch (error.code) {
+                case "auth/invalid-credential":
+                    errorMessage = "Incorrect email or password.";
+                    break;
+                case "auth/user-disabled":
+                    errorMessage = "This account has been disabled.";
+                    break;
+                case "auth/invalid-email":
+                    errorMessage = "Please enter a valid email address.";
+                    break;
+                case "auth/too-many-requests":
+                    errorMessage = "Too many attempts. Please try again later.";
+                    break;
+                case "auth/network-request-failed":
+                    errorMessage = "Network error. Check your internet connection.";
+                    break;
+                case "auth/operation-not-allowed":
+                    errorMessage = "Email/Password login is not enabled in Firebase.";
+                    break;
+                default:
+                    break;
+            }
+            seterrors((prev) => ({
+                ...prev,
+                form: errorMessage,
+            }));
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -96,7 +146,7 @@ function Login() {
                         </button>
                     </div>
 
-                    <form noValidate onSubmit={handleSubmit}>
+                    <form noValidate onSubmit={handlelogin}>
                         <div className="mt-10 flex items-center gap-6 text-center text-xl">
                             <span className="h-[2px] flex-1 bg-gray-400" />
                             <span className="whitespace-nowrap">Or continue with email</span>
@@ -104,9 +154,12 @@ function Login() {
                         </div>
                         <div className='mb-7 mt-4'>
                             <label htmlFor="login-identifier">Email address or user name</label>
-                            <input id="login-identifier" type="text" name='name' value={formData.name} onChange={handlechange} className='w-full h-11 border-2 border-solid border-[#cfcfcf] rounded-lg px-4 text-[13px] outline-none' autoComplete='username'/>
-                            {errors.name && (
-                                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                            <input id="login-identifier" type="email" name='identifier' value={formData.identifier} onChange={handlechange} className='w-full h-11 border-2 border-solid border-[#cfcfcf] rounded-lg px-4 text-[13px] outline-none' autoComplete='username' aria-invalid={Boolean(errors.identifier)} aria-describedby={errors.identifier ? "login-identifier-error" : undefined} />
+                            {errors.identifier && (
+                                <p id="login-identifier-error" role='alert' className="mt-1 text-sm text-red-600">{errors.identifier}</p>
+                            )}
+                            {errors.form && (
+                                <p role='alert' className="mt-1 text-sm text-red-600">{errors.form}</p>
                             )}
                         </div>
                         <div className='mb-7'>
@@ -116,7 +169,7 @@ function Login() {
                             </div>
                             <input id="login-password" type={showpassword ? "text" : "password"} name='password' value={formData.password} onChange={handlechange} className='w-full h-11 border-2 border-solid border-[#cfcfcf] rounded-lg px-4 text-[13px] outline-none' autoComplete='current-password'/>
                             {errors.password && (
-                                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                                <p id="login-password-error" role='alert' className='mt-1 text-sm text-red-600'>{errors.password}</p>
                             )}
                             <a href="#" className='underline text-blue-500 flex justify-end m-1.5'>Forget your password</a>
                         </div>
@@ -124,9 +177,9 @@ function Login() {
                             <input type="checkbox" name='rememberMe' checked={formData.rememberMe} onChange={handlechange}/>
                             Remember me
                         </p>
-                        <button type='submit' className='w-full h-12 border-none rounded-3xl bg-[#c5c5c5] text-black text-base cursor-pointer hover:bg-[#999] hover:text-white'>Log in</button>
+                        <button type='submit' disabled={isSubmitting} className='w-full h-12 border-none rounded-3xl bg-[#c5c5c5] text-black text-base cursor-pointer hover:bg-[#999] hover:text-white'>{isSubmitting ? "Logging in..." : "Log in"}</button>
                         {message && (
-                            <p className="mt-3 text-sm text-green-700">{message}</p>
+                            <p role="status" className="mt-3 text-sm text-green-700">{message}</p>
                         )}
                     </form>
                 </main>
