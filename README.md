@@ -98,24 +98,23 @@ Keep .env.local out of Git. The .env.example file should contain placeholder val
 ### Run Locally
 
 Start the development server:
-
-    ```sh
+```sh
     npm run dev
-    ```
+```
+
 Open the local URL displayed in the terminal.
 
 ### Testing
 
 Run the automated tests once:
-
-    ```sh
+```sh
     npm run test:run
-    ```
-Run the production build:
+```
 
-    ```sh
+Run the production build:
+```sh
     npm run build
-    ```
+```
 
 Make sure both commands complete successfully before submitting changes.
 
