@@ -6,7 +6,7 @@ export default function ProtectedRoute() {
     const location = useLocation();
 
     if (loading) {
-        return <p className='p-6 flex justify-center items-center'>Checking authentication...</p>
+        return <p className='p-6 min-h-screen flex justify-center items-center'>Checking authentication...</p>
     }
     if (!user) {
         return (

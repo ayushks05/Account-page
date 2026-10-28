@@ -170,7 +170,7 @@ function Login() {
                             {errors.password && (
                                 <p id="login-password-error" role='alert' className='mt-1 text-sm text-red-600'>{errors.password}</p>
                             )}
-                            <a href="#" className='underline text-blue-500 flex justify-end m-1.5'>Forget your password</a>
+                            <Link to="/forgot-password" className='text-sm font-medium text-gray-700 underline hover:text-black'>Forgot password?</Link>
                         </div>
                         <p className='terms text-base text-[#555] mt-1.5 mb-4 font-normal flex gap-1'>
                             <input type="checkbox" name='rememberMe' checked={formData.rememberMe} onChange={handlechange}/>
