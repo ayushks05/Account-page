@@ -17,6 +17,13 @@ export default function ProtectedRoute() {
             />
         );
     }
+    const needsEmailVerification = user.providerData.some(
+        (provider) => provider.providerId === "password"
+    ) && !user.emailVerified;
+
+    if (needsEmailVerification && !user.emailVerified) {
+        return <Navigate to="/verify-email" replace></Navigate>
+    }
 
     return <Outlet />;
 }

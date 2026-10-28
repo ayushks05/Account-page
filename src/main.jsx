@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
+import VerifyEmail from './components/VerifyEmail.jsx';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/forgot-password",
     element: <ForgotPassword />
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmail />
   },
   {
     element: <ProtectedRoute />,

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, reload } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 
 const AuthContext = createContext(undefined);
@@ -7,6 +7,24 @@ const AuthContext = createContext(undefined);
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [, setAuthRevision] = useState(0);
+
+    const refreshUser = async () => {
+        const currentUser = auth.currentUser;
+
+        if (!currentUser) {
+            setUser(null);
+            return null;
+        }
+        await reload(currentUser);
+
+        const updatedUser = auth(currentUser);
+        setUser(updatedUser);
+
+        setAuthRevision((AuthRevision) => AuthRevision + 1);
+
+        return updatedUser;
+    }
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(
@@ -24,7 +42,7 @@ export function AuthProvider({ children }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loading }}>
+        <AuthContext.Provider value={{ user, loading, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );
