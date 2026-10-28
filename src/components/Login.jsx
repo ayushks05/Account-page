@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import { useState } from 'react';
 import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { useNavigate } from 'react-router';
 
 function Login() {
 
@@ -17,6 +18,7 @@ function Login() {
     });
     const [errors, seterrors] = useState({});
     const [message, setmessage] = useState("");
+    const navigate = useNavigate();
 
     const handlechange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -63,15 +65,12 @@ function Login() {
                 auth,
                 formData.rememberMe ? browserLocalPersistence : browserSessionPersistence
             );
-            const userCredential = await signInWithEmailAndPassword(
+            await signInWithEmailAndPassword(
                 auth,
                 identifier,
                 formData.password
             );
-            const user = userCredential.user;
-            setmessage(
-                `Welcome back${user.displayName ? `, ${user.displayName}` : ""}! Login successful.`
-            );
+            navigate("/dashboard", { replace: true });
         } catch (error) {
             console.error("Login error:", error.code);
 
