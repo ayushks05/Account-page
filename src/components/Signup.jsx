@@ -3,7 +3,7 @@ import googleLogo from '../assets/google.png';
 import appleLogo from '../assets/apple.png';
 import facebookLogo from '../assets/facebook.png';
 import { Link } from 'react-router';
-import { updateProfile, createUserWithEmailAndPassword } from "firebase/auth";
+import { updateProfile, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { auth } from '../lib/firebase';
 
 function Signup() {
@@ -84,7 +84,9 @@ function Signup() {
                     displayName: formData.name.trim(),
                 });
 
-                setsuccess("Account created successfully!");
+                await sendEmailVerification(userCredential.user);
+                setsuccess("Account created! Please check your email to verify your account.");
+
             } catch (profileError) {
                 console.error("Profile update failed:", profileError.code);
                 setsuccess(
