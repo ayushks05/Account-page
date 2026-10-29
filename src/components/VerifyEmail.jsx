@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Navigate, useNavigate, Link } from 'react-router';
 import { reload, sendEmailVerification } from 'firebase/auth';
 
 export default function VerifyEmail() {
 
-    const { user, loading, refreshUser } = useAuth();
+    const { user, loading } = useAuth();
     const navigate = useNavigate();
     const [sending, setsending] = useState();
     const [checking, setchecking] = useState();
@@ -13,7 +13,7 @@ export default function VerifyEmail() {
     const [error, seterror] = useState();
 
     if (loading) {
-        <p className='p-6'>Checking authentication...</p>
+        return <p className='p-6'>Checking authentication...</p>
     }
     if (!user) {
         return <Navigate to="/login" replace/>
@@ -51,9 +51,9 @@ export default function VerifyEmail() {
         seterror("");
 
         try {
-            const updatedUser = await reload(user);
+            await reload(user);
 
-            if (updatedUser?.emailVerified) {
+            if (user.emailVerified) {
                 navigate("/dashboard", { replace: true });
             } else {
                 setmessage("Your email is not verified yet. Open the verification link and try again.");
