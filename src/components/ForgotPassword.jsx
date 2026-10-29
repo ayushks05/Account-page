@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../lib/firebase';
@@ -34,7 +34,7 @@ export default function ForgotPassword() {
             if (error.code === "auth/invalid-email") {
                 seterror("Please enter a valid email address.");
             } else if (error.code === "auth/too-many-requests") {
-                seterror("Too many attempts. Please try again later.");
+                seterror("Too many requests. Please try again later.");
             } else if (error.code === "auth/network-request-failed") {
                 seterror("Network error. Check your internet connection.")
             } else {
