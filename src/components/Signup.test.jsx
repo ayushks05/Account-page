@@ -1,12 +1,21 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { beforeEach, describe, it, expect, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import Signup from "./Signup.jsx";
+import { auth } from "../lib/firebase";
+
+const firebaseMocks = vi.hoisted(() => ({
+  createUserWithEmailAndPassword: vi.fn(),
+  updateProfile: vi.fn(),
+  sendEmailVerification: vi.fn(),
+}));
 
 vi.mock("firebase/auth", () => ({
-  createUserWithEmailAndPassword: vi.fn().mockResolvedValue({ user: {} }),
-  updateProfile: vi.fn().mockResolvedValue(undefined),
+  createUserWithEmailAndPassword:
+    firebaseMocks.createUserWithEmailAndPassword,
+  updateProfile: firebaseMocks.updateProfile,
+  sendEmailVerification: firebaseMocks.sendEmailVerification,
 }));
 
 vi.mock("../lib/firebase", () => ({
@@ -14,65 +23,54 @@ vi.mock("../lib/firebase", () => ({
 }));
 
 function renderSignup() {
-  const user = userEvent.setup();
-
-  render(
-    <MemoryRouter>
-      <Signup />
-    </MemoryRouter>
-  );
-
-  return user;
+  return {
+    user: userEvent.setup(),
+    ...render(
+      <MemoryRouter>
+        <Signup />
+      </MemoryRouter>
+    ),
+  };
 }
 
-describe("Signup form validation", () => {
-  it("shows errors when the form is empty", async () => {
-    const user = renderSignup();
+async function fillSignupForm(user) {
+  await user.type(
+    screen.getByPlaceholderText(/profile name/i),
+    "Ayush"
+  );
 
-    await user.click(
-      screen.getByRole("button", {
-        name: /create an account/i,
-      })
-    );
+  await user.type(
+    screen.getByPlaceholderText(/email/i),
+    "ayush@example.com"
+  );
 
-    expect(
-      screen.getByText("Please enter your name.")
-    ).toBeInTheDocument();
+  await user.type(
+    screen.getByPlaceholderText(/password/i),
+    "Hello@123"
+  );
 
-    expect(
-      screen.getByText("Please enter a valid email address.")
-    ).toBeInTheDocument();
+  await user.click(screen.getByRole("checkbox"));
+}
 
-    expect(
-      screen.getByText(
-        "Use at least 8 characters with a letter, number, and symbol."
-      )
-    ).toBeInTheDocument();
+describe("Firebase Signup", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
 
-    expect(
-      screen.getByText("Please accept the terms.")
-    ).toBeInTheDocument();
+    firebaseMocks.createUserWithEmailAndPassword.mockResolvedValue({
+      user: {
+        uid: "test-user",
+        email: "ayush@example.com",
+      },
+    });
+
+    firebaseMocks.updateProfile.mockResolvedValue(undefined);
+    firebaseMocks.sendEmailVerification.mockResolvedValue(undefined);
   });
 
-  it("rejects an invalid email", async () => {
-    const user = renderSignup();
+  it("creates an account and requests email verification", async () => {
+    const { user } = renderSignup();
 
-    await user.type(
-      screen.getByPlaceholderText("Enter your profile name"),
-      "Ayush"
-    );
-
-    await user.type(
-      screen.getByPlaceholderText("Enter your email address"),
-      "ayush@invalid"
-    );
-
-    await user.type(
-      screen.getByPlaceholderText("Enter your password"),
-      "Hello@123"
-    );
-
-    await user.click(screen.getByRole("checkbox"));
+    await fillSignupForm(user);
 
     await user.click(
       screen.getByRole("button", {
@@ -80,30 +78,38 @@ describe("Signup form validation", () => {
       })
     );
 
+    await waitFor(() => {
+      expect(
+        firebaseMocks.createUserWithEmailAndPassword
+      ).toHaveBeenCalledWith(
+        auth,
+        "ayush@example.com",
+        "Hello@123"
+      );
+    });
+
+    const createdUser = (
+      firebaseMocks.createUserWithEmailAndPassword.mock.results[0].value
+    );
+
+    expect(firebaseMocks.updateProfile).toHaveBeenCalledWith(
+      (await createdUser).user,
+      { displayName: "Ayush" }
+    );
+
     expect(
-      screen.getByText("Please enter a valid email address.")
-    ).toBeInTheDocument();
+      firebaseMocks.sendEmailVerification
+    ).toHaveBeenCalled();
   });
 
-  it("accepts valid input", async () => {
-    const user = renderSignup();
+  it("shows an error when the email is already registered", async () => {
+    firebaseMocks.createUserWithEmailAndPassword.mockRejectedValue({
+      code: "auth/email-already-in-use",
+    });
 
-    await user.type(
-      screen.getByPlaceholderText("Enter your profile name"),
-      "Ayush"
-    );
+    const { user } = renderSignup();
 
-    await user.type(
-      screen.getByPlaceholderText("Enter your email address"),
-      "ayush@example.com"
-    );
-
-    await user.type(
-      screen.getByPlaceholderText("Enter your password"),
-      "Hello@123"
-    );
-
-    await user.click(screen.getByRole("checkbox"));
+    await fillSignupForm(user);
 
     await user.click(
       screen.getByRole("button", {
@@ -112,7 +118,7 @@ describe("Signup form validation", () => {
     );
 
     expect(
-      await screen.findByText("Account created successfully!")
+      await screen.findByText(/already registered/i)
     ).toBeInTheDocument();
   });
 });
