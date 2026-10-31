@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { useNavigate } from 'react-router';
+import harry from '../assets/Image/Harry.jpeg'
 
 function Login() {
 
@@ -107,9 +108,11 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-[#e5e5e5] px-3 pt-4 sm:px-11 sm:pt-9">
+        <div className="min-h-screen bg-[#e5e5e5] px-3 pt-3 sm:px-11 sm:pt-9">
                 <header className="flex h-[50px] items-center justify-center border-b-1 border-gray-400]">
-                    <div className="h-11 w-11 rounded-full bg-[#c6c6c6]" aria-hidden="true" />
+                    <div className="h-11 w-11" aria-hidden="true">
+                        <img src={harry} className='rounded-full' alt="logo" />
+                    </div>
                 </header>
 
                 <main className="mx-auto w-full max-w-[550px] px-5 pb-12 pt-14 text-[#333] sm:px-0 sm:pt-12">
