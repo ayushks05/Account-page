@@ -5,6 +5,7 @@ import facebookLogo from '../assets/facebook.png';
 import { Link } from 'react-router';
 import { updateProfile, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { auth } from '../lib/firebase';
+import harry from '../assets/Image/Harry.jpeg'
 
 function Signup() {
     const [showpassword, setshowpassword] = useState(false);
@@ -129,10 +130,12 @@ function Signup() {
 
     return (
         <div className='min-h-screen bg-[#e5e5e5] relative p-8'>
-            <div className='left-8 w-8 h-8 bg-[#c6c6c6] rounded-full absolute top-8 sm:top-[24] sm:left-[24]'></div>
+            <div className='left-8 w-9 h-9 absolute top-8 sm:top-[24] sm:left-[24]'>
+                <img src={harry} className='rounded-full' alt="logo-harry" />
+            </div>
             <div className="w-full max-w-183 m-auto pt-15">
                 <div className="text-center mb-13">
-                    <h1 className='text-5xl'>Create a account</h1>
+                    <h1 className='text-4xl'>Create a account</h1>
 
                     <p className='text-base text-[#666]'>
                         Already have an account?
@@ -199,16 +202,16 @@ function Signup() {
                 <div className="social-section mt-12">
                     <p className='text-xl text-[#666] mb-4'>OR Continue with</p>
                     <div className="flex flex-col gap-3 sm:flex-row">
-                        <button className='flex-1 h-10 bg-white border-2 border-solid rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer hover:bg-[#999] hover:text-white'>
+                        <button className='flex-1 h-10 bg-white border-2 border-solid rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer p-2 hover:bg-[#999] hover:text-white'>
                             <img src={facebookLogo} alt="Facebook" className='w-6'/>
                             Facebook
                         </button>
-                        <button className='flex-1 h-10 bg-white border-2 border-solid rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer hover:bg-[#999] hover:text-white'>
-                            <img src={googleLogo} alt="Google" />
+                        <button className='flex-1 h-10 bg-white border-2 border-solid rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer p-2 hover:bg-[#999] hover:text-white'>
+                            <img src={googleLogo} alt="Google" className='w-5'/>
                             Google
                         </button>
-                        <button className='flex-1 h-10 bg-white border-2 border-solid rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer hover:bg-[#999] hover:text-white'>
-                            <img src={appleLogo} alt="Apple" />
+                        <button className='flex-1 h-10 bg-white border-2 border-solid rounded-3xl text-base flex items-center justify-center gap-3 cursor-pointer p-2 hover:bg-[#999] hover:text-white'>
+                            <img src={appleLogo} alt="Apple" className='w-6'/>
                             Apple
                         </button>
                     </div>
