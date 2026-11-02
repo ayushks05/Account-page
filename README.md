@@ -19,20 +19,6 @@ Account Page is a frontend project built to practise modern React development an
 
 Note: Google, Facebook, and Apple sign-in buttons are UI elements only unless their authentication providers have been configured and connected.
 
-## Screenshots
-
-### Home Page
-
-![Home img](./src/assets/Image/Home_Header.png)
-
-### Signup Page
-
-![Signup img](./src/assets/Image/Signup_page.png)
-
-### Login Page
-
-![Login img](./src/assets/Image/Login_page.png)
-
 ## Tech Stack
 
 * Frontend: React, JavaScript
