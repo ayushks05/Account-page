@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Navigate, useNavigate, Link } from 'react-router';
 import { reload, sendEmailVerification } from 'firebase/auth';
+import harry from '../assets/Image/Harry.jpeg';
 
 export default function VerifyEmail() {
 
@@ -13,7 +14,7 @@ export default function VerifyEmail() {
     const [error, seterror] = useState();
 
     if (loading) {
-        return <p className='p-6'>Checking authentication...</p>
+        return <main className="auth-page"><p className="auth-loading">Checking Firebase authentication...</p></main>
     }
     if (!user) {
         return <Navigate to="/login" replace/>
@@ -67,18 +68,22 @@ export default function VerifyEmail() {
     }
 
     return (
-        <main className='min-h-screen flex justify-center items-center bg-gray-400 px-4'>
-            <section className='w-full max-w-md rounded-2xl bg-white p-8 shadow-sm'>
-                <h1 className='text-2xl font-bold'>Verify your email</h1>
-                <p className='mt-3 text-gray-600'>
-                    We sent a verification link to{" "}
-                    <strong>{user.email}</strong>
-                </p>
+        <main className="auth-page">
+            <section className="auth-form-shell auth-utility-card">
+                <div className="dashboard-brand">
+                    <img className="brand-mark" src={harry} alt="" aria-hidden="true" />
+                    <span>Firebase Auth <span className="brand-suffix">Practice</span></span>
+                </div>
+                <div className="auth-header">
+                    <span className="top-pill">Email verification</span>
+                    <h1>Check your inbox</h1>
+                    <p>Firebase sent a verification link to <strong className="verified-email">{user.email}</strong></p>
+                </div>
                 <button
                     type='button'
                     onClick={handleCheckVerification}
                     disabled={checking}
-                    className="mt-6 w-full rounded-lg bg-black px-4 py-3 text-white disabled:opacity-60 hover:bg-gray-500 hover:cursor-pointer"
+                    className="primary-button"
                 >
                     {checking ? "Checking..." : "I've verified my email"}
                 </button>
@@ -86,18 +91,18 @@ export default function VerifyEmail() {
                     type='button'
                     disabled={sending}
                     onClick={handleResendEmail}
-                    className="mt-3 w-full rounded-lg border border-gray-300 px-4 py-3 disabled:opacity-60 hover:cursor-pointer"
+                    className="secondary-button"
                 >
                     {sending ? "Sending..." : "Resend verification email"}
                 </button>
                 {message && (
-                    <p role='status' className='mt-4 text-sm text-green-700'>{message}</p>
+                    <p role='status' className='form-success utility-message'>{message}</p>
                 )}
                 {error && (
-                    <p role='alert' className='mt-4 text-sm text-red-700'>{error}</p>
+                    <p role='alert' className='form-error utility-message'>{error}</p>
                 )}
-                <p className="mt-6 text-center text-sm text-gray-600">
-                    <Link to="/login" className='underline'>
+                <p className="auth-utility-footer">
+                    <Link to="/login">
                         Back to login
                     </Link>
                 </p>
