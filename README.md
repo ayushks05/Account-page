@@ -1,23 +1,26 @@
-# Account Page
+# Firebase Auth
 
-A React authentication project featuring signup, login, form validation, and Firebase Authentication.
+A React project for learning Firebase Authentication through a working email/password account flow.
 
 ## Overview
 
-Account Page is a frontend project built to practise modern React development and implement user authentication. It includes signup and login interfaces, client-side form validation, and Firebase integration.
+This project demonstrates Firebase email/password signup and login, profile display names, email verification, password reset, and protected routes. The interface is intentionally focused on making each authentication step clear.
 
 ## Features
 
 * Responsive signup and login interfaces
 * Client-side form validation with error messages
-* Show/hide password functionality on signup
-* Email and password authentication with Firebase
-* User display name saved to the Firebase profile during signup
-* Login form with a Remember me option
+* Show/hide password functionality
+* Firebase email/password signup and login
+* User display name saved to the Firebase profile
+* Email verification and resend/check actions
+* Password reset email flow
+* Login form with Firebase persistence selection
+* Protected dashboard available after email verification
 * Automated component tests with Vitest and React Testing Library
 * Reusable UI components styled with Tailwind CSS
 
-Note: Google, Facebook, and Apple sign-in buttons are UI elements only unless their authentication providers have been configured and connected.
+Authentication uses email and password. Social sign-in providers are not configured.
 
 ## Tech Stack
 
