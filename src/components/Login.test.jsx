@@ -44,7 +44,7 @@ function renderLogin() {
 
 async function fillLoginForm(user) {
   await user.type(
-    screen.getByLabelText(/email address or user name/i),
+    screen.getByLabelText(/email address/i),
     "ayush@example.com"
   );
 

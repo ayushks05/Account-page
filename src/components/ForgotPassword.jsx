@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import harry from '../assets/Image/Harry.jpeg';
 
 export default function ForgotPassword() {
 
@@ -46,19 +47,27 @@ export default function ForgotPassword() {
     };
 
     return (
-        <main className='flex min-h-screen items-center justify-center bg-gray-100 px-4'>
-            <section className='w-full max-w-md rounded-2xl bg-white p-8 shadow-sm'>
-                <h1 className='text-2xl font-bold'>Forgot your Password?</h1>
-                <p className='mt-2 text-sm text-gray-600'>Enter your email address to request a password reset.</p>
-                <form onSubmit={handleSumbit} noValidate className='mt-6'>
-                    <label htmlFor="email" className='mb-2 block text-sm font-medium text-gray-700'>Email address</label>
+        <main className="auth-page">
+            <section className="auth-form-shell auth-utility-card">
+                <div className="dashboard-brand">
+                    <img className="brand-mark" src={harry} alt="" aria-hidden="true" />
+                    <span>Firebase Auth <span className="brand-suffix">Practice</span></span>
+                </div>
+                <div className="auth-header">
+                    <span className="top-pill">Password reset</span>
+                    <h1>Forgot your password?</h1>
+                    <p>Enter the email address on your account. Firebase will send a reset link if it’s registered.</p>
+                </div>
+                <form onSubmit={handleSumbit} noValidate className="auth-form">
+                    <div className="field-wrapper">
+                    <label htmlFor="email" className="field-label">Email address</label>
                     <input
                     type="email"
                     name="email"
                     id="email"
                     autoComplete='email'
-                    placeholder='Enter your email address.'
-                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
+                    placeholder='you@example.com'
+                    className="input-shell"
                     value={email}
                     onChange={(e) => {
                         setemail(e.target.value);
@@ -66,23 +75,24 @@ export default function ForgotPassword() {
                         setmessage("");
                     }}
                     />
+                    </div>
                     {error && (
-                        <p role='alert' className='mt-2 text-sm text-red-600'>{error}</p>
+                        <p role='alert' className='form-error'>{error}</p>
                     )}
                     {message && (
-                        <p role='status' className='mt-2 text-sm text-green-700'>{message}</p>
+                        <p role='status' className='form-success'>{message}</p>
                     )}
                     <button
                         type='submit'
                         disabled={loading}
-                        className="mt-5 w-full rounded-lg bg-black px-4 py-3 font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
+                        className="primary-button"
                         >
                         {loading ? "Sending..." : "Send reset link"}
                     </button>
                 </form>
-                <p className="mt-6 text-center text-sm text-gray-600">
-                    Remember your password?{"  "}
-                    <Link to="/login" className="font-medium text-black underline">
+                <p className="auth-utility-footer">
+                    Remember your password?{" "}
+                    <Link to="/login">
                         Back to login
                     </Link>
                 </p>

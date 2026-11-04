@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router';
 import { signOut } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import harry from '../assets/Image/Harry.jpeg';
 
 export default function Dashboard() {
 
@@ -25,22 +26,49 @@ export default function Dashboard() {
     }
 
     return (
-        <main className='min-h-screen bg-gray-400 p-8'>
-            <div className='mx-auto max-w-3xl rounded-2xl bg-white p-8 shadow-sm'>
-                <h1 className='text-3xl font-bold'>Welcome, {user?.displayName || "User"}!</h1>
-                <p className='mt-3 text-green-900'>You are logged in successfully.</p>
-                <p className='mt-2 text-gray-600'>Email: {user?.email}</p>
+        <main className='dashboard-shell'>
+            <div className='dashboard-card'>
+                <div className='dashboard-brand'>
+                    <img className='brand-mark' src={harry} alt='' aria-hidden='true' />
+                    <span>Firebase Auth</span>
+                    <span className='dashboard-divider' aria-hidden='true'>/</span>
+                    <span className='dashboard-section'>Account</span>
+                </div>
+                <div className='dashboard-header'>
+                    <div>
+                        <p className='eyebrow'>Authentication status</p>
+                        <h1>Welcome, {user?.displayName || "User"}.</h1>
+                    </div>
+                    <span className='dashboard-badge'>Signed in</span>
+                </div>
+
+                <p className='dashboard-meta'>This protected page is available to your signed-in Firebase user.</p>
+
+                <div className='dashboard-grid'>
+                    <div className='dashboard-stat'>
+                        <span className='label'>Email</span>
+                        <span className='value'>{user?.email}</span>
+                    </div>
+                    <div className='dashboard-stat'>
+                        <span className='label'>Email status</span>
+                        <span className='value'>{user?.emailVerified ? "Verified" : "Unverified"}</span>
+                    </div>
+                </div>
+
                 {error && (
-                    <p role='alert' className='mt-4 text-red-600'>{error}</p>
+                    <p role='alert' className='form-error'>{error}</p>
                 )}
-                <button
-                    type='button'
-                    className="mt-6 rounded-lg bg-black px-6 py-3 text-white hover:bg-gray-800 disabled:opacity-60"
-                    onClick={handleLogout}
-                    disabled={loggingOut}
+
+                <div className='dashboard-actions'>
+                    <button
+                        type='button'
+                        className='dashboard-button'
+                        onClick={handleLogout}
+                        disabled={loggingOut}
                     >
-                    {loggingOut ? "Logging out..." : "Log out"}
-                </button>
+                        {loggingOut ? "Logging out..." : "Log out"}
+                    </button>
+                </div>
             </div>
         </main>
     )

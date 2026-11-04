@@ -1,12 +1,9 @@
-import googleLogo from '../assets/google.png';
-import appleLogo from '../assets/apple.png';
-import facebookLogo from '../assets/facebook.png';
 import { Link } from 'react-router';
 import { useState } from 'react';
 import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { useNavigate } from 'react-router';
-import harry from '../assets/Image/Harry.jpeg'
+import harry from '../assets/Image/Harry.jpeg';
 
 function Login() {
 
@@ -45,9 +42,9 @@ function Login() {
         const identifier = formData.identifier.trim();
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!identifier) {
-            newerrors.identifier = "Enter your email address or username.";
+            newerrors.identifier = "Enter your email address.";
         } else if (!emailPattern.test(identifier)) {
-            newerrors.identifier = "Enter a valid email address. Username login is not configured yet.";
+            newerrors.identifier = "Enter a valid email address.";
         }
 
         if (!formData.password) {
@@ -108,83 +105,104 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-[#e5e5e5] px-3 pt-3 sm:px-11 sm:pt-9">
-                <header className="flex h-[50px] items-center justify-center border-b-1 border-gray-400]">
-                    <div className="h-11 w-11" aria-hidden="true">
-                        <img src={harry} className='rounded-full' alt="logo" />
+        <div className="auth-page">
+            <div className="auth-card">
+                <aside className="auth-panel">
+                    <img
+                        className="auth-panel-image"
+                        src="https://images.unsplash.com/photo-1793559258886-a51a62122535?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+                        alt=""
+                        aria-hidden="true"
+                    />
+                    <div className="brand-row">
+                        <img className="brand-mark" src={harry} alt="" aria-hidden="true" />
+                        <span>Firebase Auth</span>
                     </div>
-                </header>
 
-                <main className="mx-auto w-full max-w-[550px] px-5 pb-12 pt-14 text-[#333] sm:px-0 sm:pt-12">
-                    <div className="mb-10 text-center">
-                        <h1 className="text-[35px] font-medium leading-tight">Log in</h1>
-                        <p className="mt-2 text-base">
-                            Don’t have an account?{' '}
-                            <Link to="/signup" className="text-blue-500 underline">Sign up</Link>
+                    <div className="auth-panel-copy">
+                        <p className="eyebrow">Authentication flow / 02</p>
+                        <h2>Sign in with email and password.</h2>
+                        <p>A hands-on project for learning Firebase Authentication.</p>
+                    </div>
+                </aside>
+
+                <main className="auth-form-shell">
+                    <div className="auth-header">
+                        <span className="top-pill">Firebase Authentication</span>
+                        <h1>Log in</h1>
+                        <p>
+                            Don’t have an account? <Link to="/signup">Sign up</Link>
                         </p>
                     </div>
 
-                    <div className="flex flex-col gap-3">
-                        <button
-                            type="button"
-                            className="flex h-[60px] w-full items-center justify-center gap-5 rounded-full border border-[#333] bg-white text-base hover:bg-[#999] hover:text-white hover:cursor-pointer"
-                        >
-                            <img src={googleLogo} alt="" className="h-6 w-6 object-contain" />
-                            Continue with Google
-                        </button>
-                        <button
-                            type="button"
-                            className="flex h-[60px] w-full items-center justify-center gap-5 rounded-full border border-[#333] bg-white text-base hover:bg-[#999] hover:text-white hover:cursor-pointer"
-                        >
-                            <img src={facebookLogo} alt="" className="h-7 w-7 object-contain" />
-                            Continue with Facebook
-                        </button>
-                        <button
-                            type="button"
-                            className="flex h-[60px] w-full items-center justify-center gap-5 rounded-full border border-[#333] bg-white text-base hover:bg-[#999] hover:text-white hover:cursor-pointer"
-                        >
-                            <img src={appleLogo} alt="" className="h-7 w-7 object-contain" />
-                            Continue with Apple
-                        </button>
-                    </div>
+                    <form noValidate onSubmit={handlelogin} className="auth-form">
+                        <div className="auth-divider">Sign in to your account</div>
 
-                    <form noValidate onSubmit={handlelogin}>
-                        <div className="mt-10 flex items-center gap-6 text-center text-xl">
-                            <span className="h-[2px] flex-1 bg-gray-400" />
-                            <span className="whitespace-nowrap">Or continue with email</span>
-                            <span className="h-[2px] flex-1 bg-gray-400" />
-                        </div>
-                        <div className='mb-7 mt-4'>
-                            <label htmlFor="login-identifier">Email address or user name</label>
-                            <input id="login-identifier" type="email" name='identifier' value={formData.identifier} onChange={handlechange} className='w-full h-11 border-2 border-solid border-[#cfcfcf] rounded-lg px-4 text-[13px] outline-none' autoComplete='username' aria-invalid={Boolean(errors.identifier)} aria-describedby={errors.identifier ? "login-identifier-error" : undefined} />
+                        <div className="field-wrapper">
+                            <label htmlFor="login-identifier" className="field-label">Email address</label>
+                            <input
+                                id="login-identifier"
+                                type="email"
+                                name="identifier"
+                                value={formData.identifier}
+                                onChange={handlechange}
+                                className="input-shell"
+                                autoComplete="username"
+                                aria-invalid={Boolean(errors.identifier)}
+                                aria-describedby={errors.identifier ? "login-identifier-error" : undefined}
+                            />
                             {errors.identifier && (
-                                <p id="login-identifier-error" role='alert' className="mt-1 text-sm text-red-600">{errors.identifier}</p>
-                            )}
-                            {errors.form && (
-                                <p role='alert' className="mt-1 text-sm text-red-600">{errors.form}</p>
+                                <p id="login-identifier-error" role="alert" className="field-error">{errors.identifier}</p>
                             )}
                         </div>
-                        <div className='mb-7'>
-                            <div className='flex justify-between items-center'>
-                                <label htmlFor="login-password">Password</label>
-                                <button type='button' className='cursor-pointer' value={formData.password} onClick={() => setshowpassword(!showpassword)}>{showpassword ? "show" : "Hide"}</button>
+
+                        <div className="field-wrapper">
+                            <div className="field-label-row">
+                                <label htmlFor="login-password" className="field-label">Password</label>
+                                <button
+                                    type="button"
+                                    className="password-toggle"
+                                    onClick={() => setshowpassword(!showpassword)}
+                                >
+                                    {showpassword ? "Hide" : "Show"}
+                                </button>
                             </div>
-                            <input id="login-password" type={showpassword ? "text" : "password"} name='password' value={formData.password} onChange={handlechange} className='w-full h-11 border-2 border-solid border-[#cfcfcf] rounded-lg px-4 text-[13px] outline-none' autoComplete='current-password'/>
+                            <input
+                                id="login-password"
+                                type={showpassword ? "text" : "password"}
+                                name="password"
+                                value={formData.password}
+                                onChange={handlechange}
+                                className="input-shell"
+                                autoComplete="current-password"
+                                aria-invalid={Boolean(errors.password)}
+                                aria-describedby={errors.password ? "login-password-error" : undefined}
+                            />
                             {errors.password && (
-                                <p id="login-password-error" role='alert' className='mt-1 text-sm text-red-600'>{errors.password}</p>
+                                <p id="login-password-error" role="alert" className="field-error">{errors.password}</p>
                             )}
-                            <Link to="/forgot-password" className='text-sm font-medium text-gray-700 underline hover:text-black'>Forgot password?</Link>
+                            <Link to="/forgot-password" className="small-muted">Forgot password?</Link>
                         </div>
-                        <p className='terms text-base text-[#555] mt-1.5 mb-4 font-normal flex gap-1'>
-                            <input type="checkbox" name='rememberMe' checked={formData.rememberMe} onChange={handlechange}/>
-                            Remember me
-                        </p>
-                        <button type='submit' disabled={isSubmitting} className='w-full h-12 border-none rounded-3xl bg-[#c5c5c5] text-black text-base cursor-pointer hover:bg-[#999] hover:text-white'>{isSubmitting ? "Logging in..." : "Log in"}</button>
+
+                        <label className="checkbox-row">
+                            <input type="checkbox" name="rememberMe" checked={formData.rememberMe} onChange={handlechange} />
+                            <span>Remember me</span>
+                        </label>
+
+                        {errors.form && (
+                            <p role="alert" className="form-error">{errors.form}</p>
+                        )}
+
+                        <button type="submit" disabled={isSubmitting} className="primary-button">
+                            {isSubmitting ? "Logging in..." : "Log in"}
+                        </button>
+
                         {message && (
-                            <p role="status" className="mt-3 text-sm text-green-700">{message}</p>
+                            <p role="status" className="form-success">{message}</p>
                         )}
                     </form>
                 </main>
+            </div>
         </div>
     );
 }
